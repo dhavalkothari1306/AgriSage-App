@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Fertilizer Recommendation System</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <i class="fas fa-seedling"></i>
+            <h1 data-translate="title">Smart Fertilizer Recommendation System</h1>
+        </div>
+        <div class="language-selector">
+            <label for="language" data-translate="selectLanguage">Select Language:</label>
+            <select id="language">
+                <option value="en">English</option>
+                <option value="hi">हिंदी (Hindi)</option>
+                <option value="kn">ಕನ್ನಡ (Kannada)</option>
+                <option value="te">తెలుగు (Telugu)</option>
+                <option value="ta">தமிழ் (Tamil)</option>
+            </select>
+        </div>
+    </header>
+
+    <div class="language-notification" id="languageNotification">
+        <span id="languageNotificationText">Language changed to English</span>
+    </div>
+
+    <main>
+        <section class="input-section">
+            <h2 data-translate="inputDetails">Input Details</h2>
+            <form id="fertilizerForm">
+                <div class="form-group">
+                    <label for="cropType" data-translate="cropType">Crop Type:</label>
+                    <select id="cropType" required>
+                        <option value="" data-translate="selectCrop">Select Crop</option>
+                        <option value="rice">Rice</option>
+                        <option value="wheat">Wheat</option>
+                        <option value="maize">Maize</option>
+                        <option value="sugarcane">Sugarcane</option>
+                        <option value="cotton">Cotton</option>
+                        <option value="potato">Potato</option>
+                        <option value="tomato">Tomato</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="soilType" data-translate="soilType">Soil Type:</label>
+                    <select id="soilType" required>
+                        <option value="" data-translate="selectSoil">Select Soil Type</option>
+                        <option value="clayey">Clayey</option>
+                        <option value="loamy">Loamy</option>
+                        <option value="sandy">Sandy</option>
+                        <option value="silty">Silty</option>
+                        <option value="peaty">Peaty</option>
+                        <option value="chalky">Chalky</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="region" data-translate="region">Region:</label>
+                    <select id="region" required>
+                        <option value="" data-translate="selectRegion">Select Region</option>
+                        <option value="north">North India</option>
+                        <option value="south">South India</option>
+                        <option value="east">East India</option>
+                        <option value="west">West India</option>
+                        <option value="central">Central India</option>
+                        <option value="northeast">Northeast India</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="location" data-translate="location">Location (for weather):</label>
+                    <input type="text" id="location" placeholder="City name" required>
+                    <button type="button" id="getWeatherBtn" data-translate="getWeather">Get Weather</button>
+                </div>
+
+                <div class="soil-test-results">
+                    <h3 data-translate="soilTestResults">Soil Test Results</h3>
+                    <div class="form-group">
+                        <label for="soilPH" data-translate="soilPH">Soil pH:</label>
+                        <input type="number" id="soilPH" min="0" max="14" step="0.1" placeholder="6.5" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="nitrogenLevel" data-translate="nitrogenLevel">Nitrogen Level (kg/ha):</label>
+                        <input type="number" id="nitrogenLevel" min="0" placeholder="280" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phosphorusLevel" data-translate="phosphorusLevel">Phosphorus Level (kg/ha):</label>
+                        <input type="number" id="phosphorusLevel" min="0" placeholder="25" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="potassiumLevel" data-translate="potassiumLevel">Potassium Level (kg/ha):</label>
+                        <input type="number" id="potassiumLevel" min="0" placeholder="180" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="organicMatter" data-translate="organicMatter">Organic Matter (%):</label>
+                        <input type="number" id="organicMatter" min="0" max="100" step="0.1" placeholder="2.5">
+                    </div>
+                </div>
+
+                <button type="submit" id="submitBtn" data-translate="getRecommendation">Get Fertilizer Recommendation</button>
+                <button type="button" id="resetBtn" data-translate="resetForm">Reset Form</button>
+            </form>
+        </section>
+
+        <section class="results-section" id="resultsSection">
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="recommendation" data-translate="recommendation">Recommendation</button>
+                <button class="tab-btn" data-tab="schedule" data-translate="schedule">Application Schedule</button>
+                <button class="tab-btn" data-tab="cost" data-translate="cost">Cost Analysis</button>
+                <button class="tab-btn" data-tab="education" data-translate="education">Education</button>
+            </div>
+
+            <div class="tab-content active" id="recommendation">
+                <div class="crop-info" id="cropInfo">
+                    <h3 data-translate="cropInformation">Crop Information</h3>
+                    <div id="cropInfoContent"></div>
+                </div>
+
+                <div class="weather-info" id="weatherInfo">
+                    <h3 data-translate="weatherConditions">Weather Conditions</h3>
+                    <div id="weatherInfoContent">
+                        <p data-translate="fetchWeather">Please fetch weather data first.</p>
+                    </div>
+                </div>
+
+                <div class="fertilizer-recommendation" id="fertilizerRecommendation">
+                    <h3 data-translate="fertilizerRecommendation">Fertilizer Recommendation</h3>
+                    <div id="recommendationContent"></div>
+                </div>
+
+                <div class="yield-prediction" id="yieldPrediction">
+                    <h3 data-translate="yieldPrediction">Yield Prediction</h3>
+                    <div id="yieldPredictionContent"></div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="schedule">
+                <h3 data-translate="applicationSchedule">Application Schedule</h3>
+                <div id="scheduleContent"></div>
+            </div>
+
+            <div class="tab-content" id="cost">
+                <h3 data-translate="costBreakdown">Cost Breakdown</h3>
+                <div id="costContent"></div>
+            </div>
+
+            <div class="tab-content" id="education">
+                <h3 data-translate="educationalTips">Educational Tips</h3>
+                <div id="educationContent"></div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p data-translate="footer">© 2023 Smart Fertilizer Recommendation System | Developed for sustainable agriculture</p>
+    </footer>
+
+    <script src="js/data.js"></script>
+    <script src="js/weather.js"></script>
+    <script src="js/recommendation.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
